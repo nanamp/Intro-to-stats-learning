@@ -108,6 +108,17 @@ plot_grid(p6,p7,p8,p9,p10)
 ##### 9. 
 # write.csv(Auto, 'Auto.csv')
 
+# mpg - miles per gallon
+# cylinders - Number of cylinders between 4 and 8
+# displacement - Engine displacement (cu. inches)
+# horsepower - Engine horsepower
+# weight - Vehicle weight (lbs.)
+# acceleration - Time to accelerate from 0 to 60 mph (sec.)
+# year - Model year (modulo 100) 
+# origin - Origin of car (1. American, 2. European, 3. Japanese)
+# name - Vehicle name
+
+
 ## a. 
 auto <- read.csv('Auto.csv')
 head(auto,5) # origin, year and name are qualitative. mpg, cylinders, displacement, horsepower, weight and acceleration are quantitative
@@ -130,7 +141,44 @@ summary(auto_filt)
 # mean of mpg increases, mean of displacement reduces. ...
 
 
+## e. 
+
+ggplot(data = auto, aes(x = weight, y = mpg, color = as.factor(year))) +
+  geom_point()  # visualize miles per gallon against weight. color by year. generally, the heavier the car, the lower the mpg. newer cars also tend to have higher mpg for the same weight
 
 
+ggplot(data = auto, aes(x = as.factor(cylinders), y = weight, color = as.factor(cylinders))) +
+  geom_boxplot()  # seems to be a trend where the more cylinders there are, the higher the weight. trend slightly breaks between 1 and 2 cylinders
+
+
+ggplot(data = auto, aes(x = as.factor(cylinders), y = acceleration, color = as.factor(cylinders))) +
+  geom_boxplot() # here, would have expected the time for acceleration to 60 to decrease steadily with number of cylinders, but that is not the case
+
+
+ggplot(data = auto, aes(x = weight, y = acceleration)) +
+  geom_point() # there might be a negative correlation here. higher the weight, the lower the time to 60, but not very strong. also surprising
+
+ggplot(data = auto, aes(x = horsepower, y = acceleration)) +
+  geom_point() # strong correlation here. higher the horsepower, the lower the time the time to 60. as expected.
+
+ggplot(data = auto, aes(x = displacement, y = acceleration)) +
+  geom_point() # some negative correlation here. as above.
+
+# now displacement with horsepower
+ggplot(data = auto, aes(x = displacement, y = horsepower)) +
+  geom_point() # as expected, the higher the displacement, the higher the horsepower.
+
+
+ggplot(data = auto, aes(x = displacement, y = mpg)) +
+  geom_point() # the higher the displacement, the lower the efficiency
+
+ggplot(data = auto, aes(x = as.factor(year), y = mpg, color = as.factor(year))) +
+  geom_boxplot() # generally, the newer the car, the better the efficiency, but there are some exceptions. not a strong correlation.
+
+
+ggplot(data = auto, aes(x = as.factor(origin), y = mpg, color = as.factor(origin))) +
+  geom_boxplot() # efficiency goes up from american to european to japanese
+
+# origin, horsepower/displacement, year, weight can be good predictors
 
 
