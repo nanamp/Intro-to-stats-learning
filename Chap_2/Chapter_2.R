@@ -1,4 +1,7 @@
 library(ISLR)
+
+###### 8.
+
 # write.csv(College, 'College.csv') - > save college dataset
 
 #### a.
@@ -61,8 +64,73 @@ ggplot(data = college, aes(x = Elite, y = Outstate, color = Elite)) +
 # Elite schools charge a higher out of state tuition on average.
 
 
+## v.
 
+library(cowplot)
+p1 <- ggplot(data = college) +
+         geom_histogram(mapping = aes(x = Apps), binwidth = 1500) 
 
+p2 <- ggplot(data = college) +
+         geom_histogram(mapping = aes(x = Accept), binwidth = 500) 
+
+p3 <-  ggplot(data = college) +
+          geom_histogram(mapping = aes(x = Enroll), binwidth = 500) 
   
+p4 <-  ggplot(data = college) +  
+          geom_histogram(mapping = aes(x = F.Undergrad), binwidth = 2000)
+
+p5 <- ggplot(data = college) +
+          geom_histogram(mapping = aes(x = Outstate), binwidth = 2000)
+
+plot_grid(p1,p2,p3,p4,p5)
+
+p6 <- ggplot(data = college) +
+  geom_histogram(mapping = aes(x = Room.Board), binwidth = 1000) 
+
+p7 <- ggplot(data = college) +
+  geom_histogram(mapping = aes(x = Personal), binwidth = 1000) 
+
+p8 <-  ggplot(data = college) +
+  geom_histogram(mapping = aes(x = perc.alumni), binwidth = 10) 
+
+p9 <-  ggplot(data = college) +  
+  geom_histogram(mapping = aes(x = Grad.Rate), binwidth = 10)
+
+p10 <- ggplot(data = college) +
+  geom_histogram(mapping = aes(x = Books), binwidth = 100)
+
+plot_grid(p6,p7,p8,p9,p10)
+  
+# out of the first five variables, only Outstate seems to be centrally skewed. Rest seem to be left skewed
+# out fo the second five, Grad.Rate seems to be right skewed. 
+
+
+##### 9. 
+# write.csv(Auto, 'Auto.csv')
+
+## a. 
+auto <- read.csv('Auto.csv')
+head(auto,5) # origin, year and name are qualitative. mpg, cylinders, displacement, horsepower, weight and acceleration are quantitative
+
+## b.
+range(auto$cylinders)
+range(auto$displacement)
+range(auto$horsepower)
+range(auto$weight)
+range(auto$acceleration)
+range(auto$mpg)
+
+## c.
+summary(auto) # find the mean and sd of the variables.
+
+## d. 
+auto_filt <- filter(auto, row_number() < 10 | row_number() > 85) # remove rows 10 through 85
+summary(auto_filt)
+
+# mean of mpg increases, mean of displacement reduces. ...
+
+
+
+
 
 
