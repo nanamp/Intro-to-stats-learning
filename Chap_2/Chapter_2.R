@@ -179,6 +179,96 @@ ggplot(data = auto, aes(x = as.factor(year), y = mpg, color = as.factor(year))) 
 ggplot(data = auto, aes(x = as.factor(origin), y = mpg, color = as.factor(origin))) +
   geom_boxplot() # efficiency goes up from american to european to japanese
 
-# origin, horsepower/displacement, year, weight can be good predictors
+# origin, horsepower/displacement, year, weight can be good predictors for mpg
 
 
+###### 10.
+# library(MASS)
+# write.csv(Boston, 'Boston.csv')
+
+## a.
+boston <- read.csv('Boston.csv')
+head(boston,5)
+
+?Boston
+
+## b. 
+pairs(boston) # pairwise scatterplots of the data
+
+# the correlations that stand out are:
+  # lower status and median value of owner-occupied homes
+  # mean distance to employment centres and nitrogen oxide concentration
+  # average number of rooms and  (both median value of homes and lower status of population)
+  # nitrogen oxide concentration and proportion of non-retain business acres per town
+# all these make real world sense
+
+## c. check if any of the predictors are associated with per capita crime rate.
+   # rad and chas are qualitative, rest are quantitative.
+
+g1 <- ggplot(data = boston, aes(x = as.factor(rad), y = crim, color = as.factor(rad))) +
+        geom_boxplot()
+g2 <- ggplot(data = boston, aes(x = as.factor(chas), y = crim, color = as.factor(chas))) +
+        geom_boxplot()   
+g3 <- ggplot(data = boston, aes(x = zn, y = crim)) +
+        geom_point()
+g4 <- ggplot(data = boston, aes(x = indus, y = crim)) +
+        geom_point()
+g5 <- ggplot(data = boston, aes(x = nox, y = crim)) +
+        geom_point()
+g6 <- ggplot(data = boston, aes(x = rm, y = crim)) +
+        geom_point()
+g7 <- ggplot(data = boston, aes(x = age, y = crim)) +
+        geom_point()
+g8 <- ggplot(data = boston, aes(x = dis, y = crim)) +
+        geom_point()
+g9 <- ggplot(data = boston, aes(x = tax, y = crim)) +
+        geom_point()
+g10 <- ggplot(data = boston, aes(x = ptratio, y = crim)) +
+        geom_point()
+g11 <- ggplot(data = boston, aes(x = black, y = crim)) +
+        geom_point()
+g12 <- ggplot(data = boston, aes(x = lstat, y = crim)) +
+        geom_point()
+g13 <- ggplot(data = boston, aes(x = medv, y = crim)) +
+        geom_point()
+
+plot_grid(g1,g2,g3,g4)
+plot_grid(g5,g6,g7,g8)
+plot_grid(g9,g10,g11,g12,g13)
+
+# there might be a relationship with age and dis. positive with age, negative with dis. not linear, some transformation required
+# possible relationship with chas, no visible relationship with rm. possible relationship with lstat and medv. positive with lstat, negative with medv
+# no visible relationship with black
+# some towns with rad of 24 have particularly high crime rates
+
+ggplot(data = boston, aes(x = medv, y = ptratio)) +
+  geom_point() # possible relationship. pupil teacher ration drops the higher the median house value.
+
+## d.
+filter(boston, ptratio > 20) # select towns with ptratio > 20 - 
+
+ggplot(data = boston, aes(x = black, y = ptratio)) +
+  geom_point() # there are some towns with high pupil teach ratios. mostly black towns
+
+
+## e.
+boston_filt <- filter(boston, chas == 1) # select towns that bound Charles River - there are 35 of them
+boston_filt
+
+## f. 
+summary(boston$ptratio)
+summary(boston_filt$ptratio)
+
+# median pupil teacher ratio is 19.05 for whole dataset and 17.6 for towns that bound Charles river
+
+## g.
+filter(boston, medv == min(medv)) # select towns with the lowest median house value
+
+summary(boston)
+# these have higher than median crime rates, median zn, about median levels of black pop, lower than median average rooms, higher than median tax rates
+
+## h.
+filter(boston, rm > 7) # select towns with more than 7 rooms per dwelling on average
+
+filter(boston, rm > 8) # select towns with more than 8 rooms per dwelling on average
+# very low crime rates, only two out of 13 bound the charles river, lower than overall median pupil teacher ratio
