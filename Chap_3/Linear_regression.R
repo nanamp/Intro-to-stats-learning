@@ -126,3 +126,64 @@ summary(model_11)
 model_12 <- lm(data = auto_num, mpg ~ cylinders + sqrt(displacement) + sqrt(horsepower) + weight + acceleration + year + factor(origin))
 summary(model_12)
 # log transformation seems to make those two significant but not squaring them or finding the square root.
+
+
+#### 10. 
+# library(ISLR)
+# Carseats
+# write.csv(Carseats, 'Carseats.csv')
+
+carseats <- read.csv('Carseats.csv')
+head(carseats,5)
+?Carseats
+
+## a. 
+sales_model <- lm(data = carseats, Sales ~ Price + factor(Urban) + factor(US))
+summary(sales_model)
+
+## b. 
+# Intercept of 13.043469 is the average value of Sales when Price is zero, store is not urban and not in the US
+# Price coefficient suggests that sales reduces by 54.5 units for each unit price increase for a non urban non US store
+# Urban coefficient suggests that Urban stores have 2% less sales on average
+# US coefficient suggess that US stores have 2% more sales on average
+
+## c. 
+# Sales = 13.043469 * Price - 0.021916 * Urban-Yes + 1.200573 * US-Yes
+
+## d. 
+# will reject the Urban variable since it's p-value is greater than 0.05. even greater than 0.1
+
+## e. 
+
+sales_model_2 <- lm(data = carseats, Sales ~ Price + factor(US))
+sales_model_2_sum <- summary(sales_model_2)
+sales_model_2_sum
+
+## f. 
+# plot a graph to visualize the fit of the model to the data
+ggplot(data = carseats, aes(x = Price, y = Sales, color = factor(US))) +
+   geom_point() + 
+   geom_abline(mapping = aes(intercept = sales_model_2_sum$coefficients[1,1],
+                             slope = sales_model_2_sum$coefficients[2,1]),color = 'green') + # US No
+   geom_abline(mapping = aes(intercept = sales_model_2_sum$coefficients[1,1] + sales_model_2_sum$coefficients[3,1],
+                            slope = sales_model_2_sum$coefficients[2,1]),color = 'red')    # US Yes
+
+
+plot(sales_model_2)
+plot(sales_model)
+
+# the following comments apply to both models
+# plot of fitted values against residuals shows no pattern suggesting that the model is a good fit for the data.
+# Q-Q plot looks good. points follow the line
+
+## g. 
+
+library(broom)
+tidy(sales_model_2, conf.int = TRUE)
+
+## h. 
+library(olsrr)
+ols_plot_resid_lev(sales_model_2)
+
+# Observations 51, 69 and 377 are possible outliers. Possibly more outlers. Will have to investigate data
+# There are several high leverage data points. 
