@@ -187,3 +187,37 @@ ols_plot_resid_lev(sales_model_2)
 
 # Observations 51, 69 and 377 are possible outliers. Possibly more outlers. Will have to investigate data
 # There are several high leverage data points. 
+
+
+#### 11. 
+
+# In this problem we will investigate the t-statistic for the null hypothesis
+# H0 : β = 0 in simple linear regression without an intercept. To
+# begin, we generate a predictor x and a response y as follows.
+set.seed (1)
+x=rnorm(100)
+y=2*x+rnorm(100)
+
+## a. 
+model_no_int <- lm(y ~ x + 0) # model with no intercept
+summary(model_no_int)
+
+# estimate of beta hat = 1.9939
+# standard error = 0.1065
+# t-statistic = 18.73
+# p-value < 2x10^-16
+# the p-value is less than 0.01 so we can reject the null hypothesis
+
+## b. 
+model_no_int_2 <- lm(x ~ y + 0) # model with no intercept
+summary(model_no_int_2)
+# estimate of beta hat = 0.39111
+# standard error = 0.02368
+# t-statistic = 18.73
+# p-value < 2x10^-16
+# the p-value is less than 0.01 so we can reject the null hypothesis
+
+
+## c. 
+# the t statistics are the same between the two models.
+# we find out why in the next section
