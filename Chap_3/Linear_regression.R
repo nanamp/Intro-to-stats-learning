@@ -221,3 +221,22 @@ summary(model_no_int_2)
 ## c. 
 # the t statistics are the same between the two models.
 # we find out why in the next section
+
+## d. calculate the t-statistic manually
+n <- 100
+t_stat <- (sqrt(n-1) * crossprod(x,y)) / 
+   (sqrt(crossprod(x) * crossprod(y)- 
+   (crossprod(x, y)) ^ 2))
+t_stat
+
+## f.
+model_int <- lm(y ~ x)
+model_int_2 <- lm(x ~ y)
+summary(model_int)
+summary(model_int_2)
+
+# estimate of beta hat zero = -0.03769 for y on x and 0.03880 for x on y
+# estimate of beta hat one = 1.99894 for y on x and  0.38942 for x on y
+# t-statistic = 18.56 for both models
+
+
