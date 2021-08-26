@@ -240,3 +240,65 @@ summary(model_int_2)
 # t-statistic = 18.56 for both models
 
 
+#### 12. 
+## a. the coefficient of y on x will be the same as the coefficient of x on y if sum of x^2 = sum of y^2.
+    
+## b. 
+
+set.seed(2)
+x <- rnorm(100)
+y <- 1.5 * x + rnorm(100)
+
+model_1 <- lm(y ~ x + 0)
+model_2 <- lm(x ~ y + 0)
+
+library(broom)
+tidy(model_1)
+tidy(model_2)
+
+# same t-statistic, different coefficients
+
+## c. 
+# if we have a vector x,we can take the elements in x, in a random order to find a vector y and this will satisfy the condition
+set.seed(3)
+x <- rnorm(100)
+y = sample(x)
+
+sum(x^2) == sum(y^2) # this should evaluate to true
+
+model_3 <- lm(y ~ x + 0)
+model_4 <- lm(x ~ y + 0)
+
+library(broom)
+tidy(model_3)
+tidy(model_4)
+
+# we end up getting two models with the same coefficient of 0.0337
+
+#### 13.
+## a. 
+set.seed(1)
+x <- rnorm(100)
+
+## b. 
+eps <- rnorm(100, mean = 0, sd = 0.25)
+
+## c.
+y <- -1 + 0.5 * x + eps
+# y has length 100 and Beta_0 = -1. Beta_1 = 0.5
+
+## d. 
+plot(x, y) 
+# plot of y against x
+# positive correlation between x and y. as x increases, y increases. relationship is strong
+
+## e. 
+model_xy <- lm(y ~ x)
+tidy(model_xy)
+
+# the estimated coefficiencts are very close to the true coefficients. the intercept is slightly off. -1.01 vs -1
+# the p value suggests high significance of the coefficient estimates.
+
+
+
+
