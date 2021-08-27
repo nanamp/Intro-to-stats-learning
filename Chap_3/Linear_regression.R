@@ -296,9 +296,75 @@ plot(x, y)
 model_xy <- lm(y ~ x)
 tidy(model_xy)
 
+
 # the estimated coefficiencts are very close to the true coefficients. the intercept is slightly off. -1.01 vs -1
 # the p value suggests high significance of the coefficient estimates.
 
+## f. 
+model_sum <- summary(model_xy)
+int <- model_sum$coefficients[1,1]
+sl <- model_sum$coefficients[2,1]
 
+xy_dat <- tibble(x,y)
+ggplot(data = xy_dat, aes(x = x , y = y, color = y)) +
+   geom_point() +
+   geom_abline(aes(slope = sl, intercept = int), color = 'red') +
+   labs(color = 'y = -1 + 0.5x + eps')
+   
+
+## g.
+model_xy2 <- lm(y~(x^2))
+tidy(model_xy2)
+# no evidence of improvement. the p values and t statistics are the same from before.
+
+## h. 
+set.seed(1)
+x <- rnorm(100)
+eps <- rnorm(100, mean = 0, sd = 0.1) # less noisy data
+y <- -1 + 0.5 * x + eps
+
+model_xy_ln <- lm(y~x)
+tidy(model_xy_ln)
+
+# better fit with less noisy data. p values get smaller and t - statistics get larger
+# estimate of coefficients also more accurate
+
+## i. 
+
+set.seed(1)
+x <- rnorm(100)
+eps <- rnorm(100, mean = 0, sd = 0.5) # more noisy data
+y <- -1 + 0.5 * x + eps
+
+model_xy_mn <- lm(y~x)
+tidy(model_xy_mn)
+
+# worse fit with more noisy data. p values get larger and t - statistics get smaller
+# estimate of coefficients are less accurate
+
+## j.
+tidy(model_xy, conf.int = TRUE)
+tidy(model_xy_mn, conf.int = TRUE)
+tidy(model_xy_ln, conf.int = TRUE)
+
+# original confidence intervals Beta_0 - > [-1.06, -0.961], Beta_1 -> [0.446, 0.553]
+# more noisy confidence intervals Beta_0 - > [-1.12, -0.923], Beta_1 -> [0.393, 0.606]
+# less noisy confidence intervals Beta_0 - > [-1.02, -0.985], Beta_1 -> [0.479, 0.521]
+
+# conclusion: the less noisy the data, the narrower the confidence interval.
+
+
+#### 14.
+
+## a.
+set.seed (1)
+x1 <- runif(100)
+x2 <- 0.5 * x1 + rnorm (100) / 10
+y <- 2 + 2 * x1 + 0.3 * x2 + rnorm (100)
+
+## b. 
+cor(x1,x2) # correlation coefficient of 0.83 shows that x1 and x2 are highly correlated.
+
+plot(x1, x2) # plot shows a clear positive correlation
 
 
