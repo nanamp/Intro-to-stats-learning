@@ -368,3 +368,114 @@ cor(x1,x2) # correlation coefficient of 0.83 shows that x1 and x2 are highly cor
 plot(x1, x2) # plot shows a clear positive correlation
 
 
+## c.
+mod_y_x1_x2 <- lm(y ~ x1 + x2)
+tidy(mod_y_x1_x2)
+
+# Beta_0_hat = 2.13
+# Beta_1_hat = 1.44  - this is the estimate of the coefficient for x1
+# Beta_2_hat = 1.01  - this is the estimate of the coefficient for x2
+# estimate are quite different from the actual coefficients in the formula
+# suggestion that x2 might not be significant. p value of 0.375
+# we can reject the null hypothesis that Beta_1 = 0 at 95% confidence. Can reject at 99%
+# we can not reject the null hypothesis that Beta_2 = 0
+
+## d. 
+mod_y_x1 <- lm(y ~ x1)
+tidy(mod_y_x1)
+
+# the estimated coefficient is now closer to the true coefficient i.e 2.11 vs 2 for intercept and 1.98 vs 2 for x1
+# the p value for the coefficient for x1 is also smaller and we can reject the null hypothesis that Beta_1 = 0
+
+
+## e. 
+mod_y_x2 <- lm(y ~ x2)
+tidy(mod_y_x2)
+# estimate of coefficient for x2 is way off
+# the p value is small enough that we can reject the null hypothesis that Beta_2 = 0
+
+## f.
+# there is some contradiction. fitting both variables means the impact of x2 is not significant and that we cannot
+# reject the null hypothesis that Beta_2 = 0 however fitting x2 alone means that the impact of x2 is significant enough to reject that null
+# hypothesis.
+# this is probably due to the fact the x1 and x2 are highly correlated and that the impact of x2 can be captured in the model by including x1 alone.
+
+## g.
+x1 <- c(x1 , 0.1)
+x2 <- c(x2 , 0.8)
+y <- c(y, 6)
+
+mod_y_x1_x2 <- lm(y ~ x1 + x2)
+tidy(mod_y_x1_x2)
+
+mod_y_x1 <- lm(y ~ x1)
+tidy(mod_y_x1)
+
+mod_y_x2 <- lm(y ~ x2)
+tidy(mod_y_x2)
+
+plot(x1,x2)
+# the new point is an outlier, going by the plot. high x2 given low x1. 
+# with the new data point, there is enough evidence to reject the hypotheses for Beta_2 = 0 but not for Beta_1
+# this is opposite to what we see without the data point. This data point is high leverage
+# plotting x1 and x2 separately against y shows enough evidence to reject both hypotheses.
+
+
+#### 15.
+
+## a.
+library(MASS)
+boston <- Boston # save dataframe
+?Boston
+# response = crime rate per capita by town (crim)
+# predictors = proportion of land zoned (zn), proportion of non-retail business acres per town (indus), bounds charles river? (chas)
+   # nitrogen oxides concentration (nox), average number of rooms (rm), proportion of houses built prior to 1940 (age)
+   # distance to employment centres (dis), access to highways (rad), property tax rate (tax), pupil teacher ratio (ptratio), black population (black)
+   # lower status of population (lstat), median value of owner occupied homes (medv)
+
+model_zn <- lm(data = boston, crim ~ zn)
+model_indus <- lm(data = boston, crim ~ indus)
+model_chas <- lm(data = boston, crim ~ as.factor(chas))
+model_nox <- lm(data = boston, crim ~ nox)
+model_rm <- lm(data = boston, crim ~ rm)
+model_age <- lm(data = boston, crim ~ age)
+model_dis <- lm(data = boston, crim ~ dis)
+model_rad <- lm(data = boston, crim ~ as.factor(rad))
+model_tax <- lm(data = boston, crim ~ tax)
+model_ptratio <- lm(data = boston, crim ~ ptratio)
+model_lstat <- lm(data = boston, crim ~ lstat)
+model_medv <- lm(data = boston, crim ~ medv)
+
+
+tidy(model_zn) # statistically significant coefficient
+plot(boston$zn, boston$crim) # high crime rates for towns with 0 zoning.
+
+tidy(model_indus) # statistically significant coefficient
+plot(boston$indus, boston$crim) # high industrialisation, high crime rate.
+
+tidy(model_chas) # not statistically significant
+
+tidy(model_nox) # statistically significant coefficient
+plot(boston$nox, boston$crim) # high concentration, high crime rate
+
+tidy(model_rm) # statistically significant coefficient
+plot(boston$rm, boston$crim)
+
+tidy(model_age) # statistically significant coefficient
+
+tidy(model_dis) # stat significant
+tidy(model_rad) # not significant
+tidy(model_tax) # significant
+tidy(model_ptratio)  # significant
+tidy(model_lstat) # significant
+tidy(model_medv) # significant
+
+
+# in conclusion, most of the predictors have a relationship when plotted alone.
+
+## b. 
+model_full <- lm(data = boston, crim ~ zn + indus + factor(chas) + nox + rm + age + dis + factor(rad) + tax + ptratio + lstat + medv)
+tidy(model_full)
+
+# using a 95% level, zn, dis, medv are the only variables for which we can reject the null hypothesis that Beta_j = 0
+
