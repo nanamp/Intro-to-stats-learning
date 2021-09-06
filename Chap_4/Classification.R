@@ -33,3 +33,34 @@ ggplot(data = weekly, aes(x = factor(Year), y = Today, color = factor(Year))) +
 
 ggplot(data = weekly, aes(x = factor(Year), y = Lag1, color = factor(Year))) +
   geom_boxplot()
+
+
+## b.
+glm_1 <- glm(data = weekly, Direction ~ Lag1 + Lag2 + Lag3 + Lag4 + Lag5 + Volume, family = "binomial")
+summary(glm_1)
+# seems like only the Lag2 variable is significant at 95%
+
+# get the predicted probability in our dataset using the predict() function
+pred_prob <- predict(glm_1,weekly, type = "response")
+
+# create a decision rule using probability 0.5 as cutoff and save the predicted decision into the main data frame
+weekly$pred_dir <- ifelse(pred_prob >= 0.5, "Up", "Down")
+
+# confusion matrix
+table(weekly$Direction,weekly$pred_dir, dnn=c('True Status','Predicted Status')) # confusion matrix
+
+# 430 cases where we predicted up instead of down, 48 or the reverse
+# 557 cases where we predicted up correctly
+# 54 cases where we predicted down correctly
+
+## c.
+weekly_sub <- filter(Weekly, Year >= 1990, Year <= 2008) # subset the data
+weekly_rem <- filter(Weekly, Year >= 2009)  # remaining data
+glm_2 <- glm(data = weekly, Direction ~ Lag2 , family = "binomial")
+pred_prob_2 <- predict(glm_2,weekly_rem, type = "response")
+weekly_rem$pred_dir <- ifelse(pred_prob_2 >= 0.5, "Up", "Down")
+table(weekly_rem$Direction,weekly_rem$pred_dir, dnn=c('True Status','Predicted Status')) # confusion matrix
+
+# 34 cases where we predicted up instead of down, 5 or the reverse
+# 56 cases where we predicted up correctly
+# 9 cases where we predicted down correctly
