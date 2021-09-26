@@ -5,7 +5,7 @@ library(ISLR)
 # write.csv(College, 'College.csv') - > save college dataset
 
 #### a.
-college = read.csv('College.csv')
+college <- read.csv('College.csv')
 
 # Private : Public/private indicator
 # Apps : Number of applications received

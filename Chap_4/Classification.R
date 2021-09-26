@@ -46,6 +46,7 @@ pred_prob <- predict(glm_1,weekly, type = "response")
 # create a decision rule using probability 0.5 as cutoff and save the predicted decision into the main data frame
 weekly$pred_dir <- ifelse(pred_prob >= 0.5, "Up", "Down")
 
+## c.
 # confusion matrix
 table(weekly$Direction,weekly$pred_dir, dnn=c('True Status','Predicted Status')) # confusion matrix
 
@@ -53,10 +54,10 @@ table(weekly$Direction,weekly$pred_dir, dnn=c('True Status','Predicted Status'))
 # 557 cases where we predicted up correctly
 # 54 cases where we predicted down correctly
 
-## c.
+## d.
 weekly_sub <- filter(Weekly, Year >= 1990, Year <= 2008) # subset the data
 weekly_rem <- filter(Weekly, Year >= 2009)  # remaining data
-glm_2 <- glm(data = weekly, Direction ~ Lag2 , family = "binomial")
+glm_2 <- glm(data = weekly_sub, Direction ~ Lag2 , family = "binomial")
 pred_prob_2 <- predict(glm_2,weekly_rem, type = "response")
 weekly_rem$pred_dir <- ifelse(pred_prob_2 >= 0.5, "Up", "Down")
 table(weekly_rem$Direction,weekly_rem$pred_dir, dnn=c('True Status','Predicted Status')) # confusion matrix
@@ -64,3 +65,12 @@ table(weekly_rem$Direction,weekly_rem$pred_dir, dnn=c('True Status','Predicted S
 # 34 cases where we predicted up instead of down, 5 or the reverse
 # 56 cases where we predicted up correctly
 # 9 cases where we predicted down correctly
+
+
+## e. linear discriminant analysis
+library(MASS)
+model_lda <- lda(Direction ~ Lag2, data = weekly_sub)
+pred_prob_3 <- predict(model_lda,weekly_rem, type = "response")
+weekly_rem$pred_dir <- pred_prob_3$class
+table(weekly_rem$Direction,weekly_rem$pred_dir, dnn=c('True Status','Predicted Status')) # confusion matrix
+
